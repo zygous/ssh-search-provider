@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=SSH Search Provider
+Comment=Search for known SSH hosts and connect to them in a terminal
+Icon=utilities-terminal
+Exec=/usr/local/bin/ssh-search-provider.js
+DBusActivatable=true
