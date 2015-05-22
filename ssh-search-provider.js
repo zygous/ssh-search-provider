@@ -107,6 +107,7 @@ sshSearcher = Gio.DBusExportedObject.wrapJSObject(
     shellSearchProvider2,
     {
         LaunchSearch: function LaunchSearch(terms, timestamp) {
+            // Not supported.
         },
 
         GetInitialResultSet: function GetInitialResultSet(terms) {
@@ -134,8 +135,19 @@ sshSearcher = Gio.DBusExportedObject.wrapJSObject(
         },
 
         ActivateResult: function ActivateResult(id, terms, timestamp) {
-            var appInfo = Gio.app_info_create_from_commandline(
-                'gnome-terminal -e "ssh ' + id + '"',
+            // Terminal app must support the -e option, like GNOME Terminal.
+            var settings,
+                exec,
+                appInfo;
+
+            settings = Gio.Settings.new(
+                'org.gnome.desktop.default-applications.terminal'
+            );
+
+            exec = settings.get_string('exec');
+
+            appInfo = Gio.app_info_create_from_commandline(
+                exec + ' -e "ssh ' + id + '"',
                 null,
                 Gio.AppInfoCreateFlags.SUPPORTS_STARTUP_NOTIFICATION & Gio.AppInfoCreateFlags.SUPPORTS_URIS
             );
