@@ -75,7 +75,11 @@ parseKnownHosts = function parseKnownHosts(string) {
          that begin with a pipe character. */
         if ('|' !== tokens[0][0]) {
             tokens[0].split(',').forEach(function (host) {
-                hosts[host] = true;
+                // Strip square brackets that may be wrapping the hostname.
+                var h = host.replace('[', '').replace(']', '');
+                h = h.replace(/(?:|:.+)$/, '');
+                log(h);
+                hosts[h] = true;
             });
         }
     });
@@ -138,16 +142,20 @@ sshSearcher = Gio.DBusExportedObject.wrapJSObject(
             // Terminal app must support the -e option, like GNOME Terminal.
             var settings,
                 exec,
-                appInfo;
+                appInfo,
+                command;
 
             settings = Gio.Settings.new(
                 'org.gnome.desktop.default-applications.terminal'
             );
 
             exec = settings.get_string('exec');
+            command = exec + ' -e "ssh ' + id + '"';
+
+            log(command);
 
             appInfo = Gio.app_info_create_from_commandline(
-                exec + ' -e "ssh ' + id + '"',
+                command,
                 null,
                 Gio.AppInfoCreateFlags.SUPPORTS_STARTUP_NOTIFICATION & Gio.AppInfoCreateFlags.SUPPORTS_URIS
             );
