@@ -78,7 +78,6 @@ parseKnownHosts = function parseKnownHosts(string) {
                 // Strip square brackets that may be wrapping the hostname.
                 var h = host.replace('[', '').replace(']', '');
                 h = h.replace(/(?:|:.+)$/, '');
-                log(h);
                 hosts[h] = true;
             });
         }
@@ -151,8 +150,6 @@ sshSearcher = Gio.DBusExportedObject.wrapJSObject(
 
             exec = settings.get_string('exec');
             command = exec + ' -e "ssh ' + id + '"';
-
-            log(command);
 
             appInfo = Gio.app_info_create_from_commandline(
                 command,
